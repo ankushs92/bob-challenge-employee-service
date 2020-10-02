@@ -1,31 +1,97 @@
-HELP.md
+# Directories #
+/build/
+bin/
+repos/
+/repos/
+doc/
+/doc/
+.gradle/
+/bin/
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**
-!**/src/test/**
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
 .springBeans
-.sts4-cache
+catalina.*
+WEB-INF/
+/WEB-INF/
+dbip*
+browscap*
 
-### IntelliJ IDEA ###
-.idea
-*.iws
 *.iml
-*.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
+/out/
+/idea/
+*idea
+.idea*
+*.rdb
 
-### VS Code ###
-.vscode/
+# ini files £
+*.ini
+
+# OS Files #
+.DS_Store
+
+*.class
+
+gradlew.bat
+gradlew
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.db
+ 
+######################
+# Windows
+######################
+ 
+# Windows image file caches
+Thumbs.db 
+ 
+# Folder config file
+Desktop.ini
+ 
+######################
+# OSX
+######################
+ 
+.DS_Store
+.svn
+ 
+# Thumbnails
+._*
+ 
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+ 
+ 
+######################
+# Eclipse
+######################
+ 
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+/src/main/resources/rebel.xml
+# External tool builders
+.externalToolBuilders/
+ 
+# Locally stored "Eclipse launch configurations"
+*.launch
+ 
+# CDT-specific
+.cproject
+ 
+# PDT-specific
+.buildpath
