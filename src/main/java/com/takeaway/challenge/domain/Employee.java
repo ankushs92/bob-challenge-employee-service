@@ -2,6 +2,8 @@ package com.takeaway.challenge.domain;
 
 import com.takeaway.challenge.req.EmployeeAddReq;
 import com.takeaway.challenge.util.Assert;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,7 +16,9 @@ import java.util.UUID;
 public class Employee {
 
     @Id
-    @GeneratedValue(generator = "uuid4")
+    @GeneratedValue(generator = "UUID")
+    @Type(type="uuid-char") // For human readable uuid in mysql, otherwise it's binary
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
     @Column(name = "email")
@@ -33,14 +37,21 @@ public class Employee {
     @Column(name = "created_on")
     private ZonedDateTime created;
 
+    @Column(name = "updated")
+    private ZonedDateTime updated;
+
     public Employee() {}
 
     public Employee(final EmployeeAddReq add, final Department department) {
         Assert.notNull(add, "EmployeeAddReq cannot be null");
+//        this.id = UUID.randomUUID();
         this.email = add.getEmail();
         this.name = add.getName();
         this.birthday = add.getBirthday();
-        this.created = ZonedDateTime.now(ZoneId.of("UTC"));
+
+        var now = ZonedDateTime.now(ZoneId.of("UTC"));
+        this.created = now;
+        this.updated = now;
         this.department = department;
     }
 
@@ -68,6 +79,30 @@ public class Employee {
         return created;
     }
 
+    public ZonedDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public void setUpdated(ZonedDateTime updated) {
+        this.updated = updated;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -77,6 +112,7 @@ public class Employee {
                 ", birthday=" + birthday +
                 ", department=" + department +
                 ", created=" + created +
+                ", updated=" + updated +
                 '}';
     }
 }

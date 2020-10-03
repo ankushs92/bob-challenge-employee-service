@@ -2,13 +2,11 @@ package com.takeaway.challenge.domain;
 
 import com.takeaway.challenge.req.DepartmentAddReq;
 import com.takeaway.challenge.util.Assert;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "departments")

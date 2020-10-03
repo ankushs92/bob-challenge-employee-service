@@ -46,4 +46,12 @@ public class EmployeeAddReq {
     public int getDepartmentId() {
         return departmentId;
     }
+
+    @Override
+    public String toString() {
+        return "DepartmentAddReq{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
 }
