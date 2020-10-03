@@ -11,4 +11,6 @@ public interface DepartmentService {
 
     Optional<Department> find(int id);
 
+    void delete(int id);
+
 }

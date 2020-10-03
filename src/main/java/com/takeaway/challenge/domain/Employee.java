@@ -37,11 +37,46 @@ public class Employee {
 
     public Employee(final EmployeeAddReq add, final Department department) {
         Assert.notNull(add, "EmployeeAddReq cannot be null");
-        this.email = add.getName();
-        this.name = add.getEmail();
+        this.email = add.getEmail();
+        this.name = add.getName();
         this.birthday = add.getBirthday();
         this.created = ZonedDateTime.now(ZoneId.of("UTC"));
         this.department = department;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public ZonedDateTime getCreated() {
+        return created;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", birthday=" + birthday +
+                ", department=" + department +
+                ", created=" + created +
+                '}';
+    }
 }

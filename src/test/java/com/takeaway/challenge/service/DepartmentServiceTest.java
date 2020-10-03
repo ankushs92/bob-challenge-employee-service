@@ -5,6 +5,7 @@ import com.takeaway.challenge.domain.Department;
 import com.takeaway.challenge.exception.TakeawayException;
 import com.takeaway.challenge.repository.DepartmentRepository;
 import com.takeaway.challenge.req.DepartmentAddReq;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,11 @@ public class DepartmentServiceTest extends ChallengeApplicationTests {
     public void persistDepartment() {
         var dept = new Department(new DepartmentAddReq("Mathematics"));
         departmentRepository.save(dept);
+    }
+
+    @AfterEach
+    public void deleteAllDepartments() {
+        departmentRepository.deleteAll();
     }
 
     @Test

@@ -1,15 +1,18 @@
 package com.takeaway.challenge.service.impl;
 
 import com.takeaway.challenge.domain.Employee;
+import com.takeaway.challenge.exception.TakeawayError;
 import com.takeaway.challenge.exception.TakeawayException;
 import com.takeaway.challenge.repository.EmployeeRepository;
 import com.takeaway.challenge.req.EmployeeAddReq;
 import com.takeaway.challenge.service.DepartmentService;
 import com.takeaway.challenge.service.EmployeeService;
 import com.takeaway.challenge.util.Assert;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,21 +34,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee create(final EmployeeAddReq add) {
         Assert.notNull(add, "EmployeeAddReq cannot be null");
-        var employee = repository.findOneByEmail(add.getEmail());
         var department = departmentService.find(add.getDepartmentId());
-        return null;
+        //The department needs to exist in the database for an employee to be added to it
+        if(department.isEmpty()) {
+            throw new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND);
+        }
+
+        var employee = repository.findOneByEmail(add.getEmail());
+        if(employee.isPresent()) {
+            throw new TakeawayException(TakeawayError.E_01, HttpStatus.FORBIDDEN);
+        }
+
+        return repository.save(new Employee(add, department.get()));
     }
 
     @Override
-    public Employee find(final UUID employeeId) {
-        Assert.notNull(employeeId, "employeeId cannot be null");
-
-        return null;
+    public Optional<Employee> find(final UUID id) {
+        Assert.notNull(id, "employeeId cannot be null");
+        return repository.findOneById(id);
     }
 
     @Override
-    public boolean delete(final UUID employeeId) {
-        Assert.notNull(employeeId, "employeeId cannot be null");
-        return false;
+    public void delete(final UUID id) {
+        Assert.notNull(id, "employeeId cannot be null");
+        repository.deleteById(id);
     }
 }
