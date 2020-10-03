@@ -43,18 +43,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee create(final EmployeeAddReq add) {
         Assert.notNull(add, "EmployeeAddReq cannot be null");
-        var department = departmentService.find(add.getDepartmentId());
+
         //The department needs to exist in the database for an employee to be added to it
-        if(department.isEmpty()) {
-            throw new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND);
-        }
+        var department = departmentService.find(add.getDepartmentId())
+                                          .orElseThrow(() ->new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND));
 
         var employee = repository.findOneByEmail(add.getEmail());
         if(employee.isPresent()) {
             throw new TakeawayException(TakeawayError.E_01, HttpStatus.FORBIDDEN);
         }
 
-        var newEmployee = repository.save(new Employee(add, department.get()));
+        var newEmployee = repository.save(new Employee(add, department));
         var employeeEvent = new EmployeeEvent(newEmployee, CrudOp.ADD);
         employeeEventService.sendMessage(employeeEvent);
 
@@ -70,14 +69,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void delete(final UUID id) {
         Assert.notNull(id, "employeeId cannot be null");
-        var employee = find(id);
-        if(employee.isEmpty()) {
-            throw new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND);
-        }
+        var employee = find(id).orElseThrow(() -> new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND));
 
         repository.deleteById(id);
 
-        var employeeEvent = new EmployeeEvent(employee.get(), CrudOp.DELETE);
+        var employeeEvent = new EmployeeEvent(employee, CrudOp.DELETE);
         employeeEventService.sendMessage(employeeEvent);
     }
 
@@ -85,12 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee update(final UUID uuid, final EmployeeUpdateReq update) {
         Assert.notNull(uuid, "uuid cannot be null");
         Assert.notNull(update, "EmployeeUpdateReq cannot be null");
-        var employeeOpt = find(uuid);
-        if(employeeOpt.isEmpty()) {
-            throw new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND);
-        }
-
-        var employee = employeeOpt.get();
+        var employee = find(uuid).orElseThrow(() ->new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND));
         var updatedDeptId = update.getDepartmentId();
         var updatedBirthday = update.getBirthday();
         var updatedName = update.getName();
