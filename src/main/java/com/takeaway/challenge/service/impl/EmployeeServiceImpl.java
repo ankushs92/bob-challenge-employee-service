@@ -1,15 +1,17 @@
 package com.takeaway.challenge.service.impl;
 
 import com.takeaway.challenge.domain.Employee;
+import com.takeaway.challenge.domain.EmployeeEvent;
+import com.takeaway.challenge.domain.enums.CrudOp;
 import com.takeaway.challenge.exception.TakeawayError;
 import com.takeaway.challenge.exception.TakeawayException;
 import com.takeaway.challenge.repository.EmployeeRepository;
 import com.takeaway.challenge.req.EmployeeAddReq;
 import com.takeaway.challenge.req.EmployeeUpdateReq;
 import com.takeaway.challenge.service.DepartmentService;
+import com.takeaway.challenge.service.EmployeeEventService;
 import com.takeaway.challenge.service.EmployeeService;
 import com.takeaway.challenge.util.Assert;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,14 +27,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository repository;
     private final DepartmentService departmentService;
+    private final EmployeeEventService employeeEventService;
 
     public EmployeeServiceImpl(
             final EmployeeRepository repository,
-            final DepartmentService departmentService
+            final DepartmentService departmentService,
+            final EmployeeEventService employeeEventService
     )
     {
         this.repository = repository;
         this.departmentService = departmentService;
+        this.employeeEventService = employeeEventService;
     }
 
     @Override
@@ -49,7 +54,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new TakeawayException(TakeawayError.E_01, HttpStatus.FORBIDDEN);
         }
 
-        return repository.save(new Employee(add, department.get()));
+        var newEmployee = repository.save(new Employee(add, department.get()));
+        var employeeEvent = new EmployeeEvent(newEmployee, CrudOp.ADD);
+        employeeEventService.sendMessage(employeeEvent);
+
+        return newEmployee;
     }
 
     @Override
@@ -61,12 +70,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void delete(final UUID id) {
         Assert.notNull(id, "employeeId cannot be null");
-        try {
-            repository.deleteById(id);
-        }
-        catch (final EmptyResultDataAccessException ex) {
+        var employee = find(id);
+        if(employee.isEmpty()) {
             throw new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND);
         }
+
+        repository.deleteById(id);
+
+        var employeeEvent = new EmployeeEvent(employee.get(), CrudOp.DELETE);
+        employeeEventService.sendMessage(employeeEvent);
     }
 
     @Override
@@ -107,7 +119,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setUpdated(ZonedDateTime.now(ZoneId.of("UTC")));
 
-        return repository.save(employee);
+        var updatedEmployee = repository.save(employee);
+        var employeeEvent = new EmployeeEvent(updatedEmployee, CrudOp.UPDATE);
+        employeeEventService.sendMessage(employeeEvent);
+
+        return updatedEmployee;
     }
 
     private boolean employeeWithEmailAlreadyExists(final String email) {
