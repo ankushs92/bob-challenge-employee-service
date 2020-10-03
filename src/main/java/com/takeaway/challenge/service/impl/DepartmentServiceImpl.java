@@ -26,10 +26,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Department create(final DepartmentAddReq departmentAddReq) {
         Assert.notNull(departmentAddReq, "departmentAddReq cannot be null");
         var department = repository.findOneByName(departmentAddReq.getName());
-        if(department.isEmpty()) {
-            return repository.save(new Department(departmentAddReq));
+        if(department.isPresent()) {
+            throw new TakeawayException(TakeawayError.D_01);
         }
-        throw new TakeawayException(TakeawayError.D_01);
+        return repository.save(new Department(departmentAddReq));
     }
 
     @Override

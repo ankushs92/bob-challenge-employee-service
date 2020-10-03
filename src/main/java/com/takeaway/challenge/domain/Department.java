@@ -15,7 +15,7 @@ import java.util.Set;
 public class Department {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column
@@ -50,4 +50,8 @@ public class Department {
     public List<Employee> getEmployees() {
         return employees;
     }
+
+
+
+
 }

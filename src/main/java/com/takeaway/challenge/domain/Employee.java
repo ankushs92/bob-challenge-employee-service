@@ -33,6 +33,7 @@ public class Employee {
     @Column(name = "created_on")
     private ZonedDateTime created;
 
+    public Employee() {}
 
     public Employee(final EmployeeAddReq add, final Department department) {
         Assert.notNull(add, "EmployeeAddReq cannot be null");
