@@ -11,6 +11,7 @@ import com.takeaway.challenge.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody final EmployeeAddReq addReq) {
         logger.debug("EmployeeAddReq {}", addReq);
         var employee = employeeService.create(addReq);
@@ -36,7 +37,7 @@ public class EmployeeController {
         return new ResponseEntity<>(resp, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{uuid}")
+    @GetMapping(value = "/{uuid}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable final String uuid) {
         logger.debug("Find By UUID {}", uuid);
         var employee = employeeService.find(UUID.fromString(uuid));
@@ -47,14 +48,14 @@ public class EmployeeController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{uuid}")
+    @DeleteMapping(value = "/{uuid}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteById(@PathVariable final String uuid) {
         logger.debug("Delete By {}", uuid);
         employeeService.delete(UUID.fromString(uuid));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{uuid}")
+    @PutMapping(value = "/{uuid}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateById(
             @PathVariable final String uuid,
             @RequestBody  final EmployeeUpdateReq updateReq)

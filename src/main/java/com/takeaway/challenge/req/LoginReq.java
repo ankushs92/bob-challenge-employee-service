@@ -7,7 +7,7 @@ public class LoginReq {
     private final String email;
     private final String password;
 
-    LoginReq(
+    public LoginReq(
             @JsonProperty("email") final String email,
             @JsonProperty("password") final String password)
     {

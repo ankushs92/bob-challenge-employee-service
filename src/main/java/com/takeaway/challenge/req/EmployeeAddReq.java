@@ -1,6 +1,8 @@
 package com.takeaway.challenge.req;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.takeaway.challenge.jackson.LocalDateSerializer;
 
 import java.time.LocalDate;
 
@@ -19,7 +21,7 @@ public class EmployeeAddReq {
             @JsonProperty("name") final String name,
 
             @JsonProperty("birthday")
-//            @JsonDeserialize(using = LocalDateDeserializer.class)
+            @JsonSerialize(using = LocalDateSerializer.class)
             final LocalDate birthday,
 
             @JsonProperty("departmentId") final int departmentId

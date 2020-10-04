@@ -2,12 +2,17 @@ package com.takeaway.challenge.service.impl;
 
 import com.takeaway.challenge.constants.JwtConstants;
 import com.takeaway.challenge.domain.auth.User;
+import com.takeaway.challenge.exception.TakeawayError;
+import com.takeaway.challenge.exception.TakeawayException;
 import com.takeaway.challenge.req.LoginReq;
 import com.takeaway.challenge.service.AuthenticationService;
 import com.takeaway.challenge.service.UserService;
 import com.takeaway.challenge.util.Assert;
 import com.takeaway.challenge.util.Strings;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
     private final UserService userService;
 
     AuthenticationServiceImpl(final UserService userService) {
@@ -44,28 +50,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UsernamePasswordAuthenticationToken authenticate(final String jwtToken) {
         Assert.notEmptyString(jwtToken, "jwtToken token cannot be null or empty");
-        System.out.println(jwtToken);
-        var parsedToken = Jwts
-                .parser()
-                .setSigningKey(JwtConstants.SECRET)
-                .parseClaimsJws(jwtToken.replace("Bearer ", ""));
+        try {
+            var parsedToken = Jwts
+                    .parser()
+                    .setSigningKey(JwtConstants.SECRET)
+                    .parseClaimsJws(jwtToken.replace("Bearer ", ""));
 
-        var username = parsedToken
-                .getBody()
-                .getSubject();
+            var username = parsedToken
+                    .getBody()
+                    .getSubject();
 
-        if(!Strings.hasText(username)) {
-            throw new UsernameNotFoundException("Username not found");
+            if(!Strings.hasText(username)) {
+                throw new UsernameNotFoundException("Username not found");
+            }
+
+            var user = getUser(username, null);
+
+            var authorities = ((List<?>) parsedToken.getBody()
+                    .get("rol")).stream()
+                    .map(authority -> new SimpleGrantedAuthority((String) authority))
+                    .collect(Collectors.toList());
+
+            return new UsernamePasswordAuthenticationToken(user, username, authorities);
+
         }
-
-        var user = getUser(username, null);
-
-        var authorities = ((List<?>) parsedToken.getBody()
-                .get("rol")).stream()
-                .map(authority -> new SimpleGrantedAuthority((String) authority))
-                .collect(Collectors.toList());
-
-        return new UsernamePasswordAuthenticationToken(user, username, authorities);
+        catch (final Exception ex) {
+            logger.error("", ex);
+            throw new TakeawayException(TakeawayError.AUTH_01, HttpStatus.FORBIDDEN);
+        }
     }
 
     private User getUser(final String email, final String password) {

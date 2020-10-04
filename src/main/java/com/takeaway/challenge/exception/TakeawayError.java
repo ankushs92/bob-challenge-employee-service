@@ -4,7 +4,9 @@ public enum TakeawayError {
     GEN_01("Resource does not exist"),
     D_01("Department with name already exists"),
 
-    E_01("Employee with email already exists");
+    E_01("Employee with email already exists"),
+
+    AUTH_01("Malformed Jwt token");
 
     private final String desc;
 

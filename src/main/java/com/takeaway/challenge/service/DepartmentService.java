@@ -13,4 +13,6 @@ public interface DepartmentService {
 
     void delete(int id);
 
+    void deleteAll();
+
 }

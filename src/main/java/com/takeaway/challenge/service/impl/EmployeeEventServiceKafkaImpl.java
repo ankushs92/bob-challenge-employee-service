@@ -8,7 +8,13 @@ import com.takeaway.challenge.util.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class EmployeeEventServiceKafkaImpl implements EmployeeEventService {
@@ -21,15 +27,22 @@ public class EmployeeEventServiceKafkaImpl implements EmployeeEventService {
     }
 
     @Override
-    public void sendMessage(final EmployeeEvent employeeEvent) {
+    @Async
+    public ListenableFuture<Map<String, String>> sendMessage(final EmployeeEvent employeeEvent) {
         Assert.notNull(employeeEvent, "employeeEvent cannot be null");
         //Since we are working with only one partition, no key needs to be specified
-        //Also, we serialize the object to JSON and then send it to the topic
         var json = Json.encode(employeeEvent);
+        var metaData = new HashMap<String, String>();
         kafka.send(KafkaTopic.EMPLOYEE_EVENT, json)
              .addCallback(
-                     (success) -> {}, // do something if you wish if operation is a success
+                     (success) -> {
+                         var recordMetaData = success.getRecordMetadata();
+                         metaData.put("offset", String.valueOf(recordMetaData.offset()));
+                         metaData.put("topic", recordMetaData.topic());
+                     },
                      (failure) -> logger.error("Could not push message to Kafka :", failure)
              );
+
+        return new AsyncResult<>(metaData);
     }
 }

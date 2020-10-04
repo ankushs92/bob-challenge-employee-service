@@ -8,6 +8,7 @@ import com.takeaway.challenge.exception.TakeawayException;
 import com.takeaway.challenge.repository.EmployeeRepository;
 import com.takeaway.challenge.req.DepartmentAddReq;
 import com.takeaway.challenge.req.EmployeeAddReq;
+import com.takeaway.challenge.req.EmployeeUpdateReq;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,7 +81,6 @@ public class EmployeeServiceTest extends ChallengeApplicationTests {
     @Test
     public void testDelete_EmployeeIsJohn_shouldReturnEmptyOptionalWhenQueriedById() {
         var employeeAdd = new EmployeeAddReq("john@gmail.com", "John", LocalDate.of(1992, Month.OCTOBER, 5), mathDept.getId());
-
         var employee = employeeService.create(employeeAdd);
         var employeeId = employee.getId();
 
@@ -91,8 +91,27 @@ public class EmployeeServiceTest extends ChallengeApplicationTests {
         assertThat(employeeOpt.isPresent(), equalTo(false));
     }
 
+    @Test
+    public void testUpdate_EmployeeIsJohn_shouldReturnUpdatedEmployeeWhenQueriedById() {
+        var employeeAdd = new EmployeeAddReq("john@gmail.com", "John", LocalDate.of(1992, Month.OCTOBER, 5), mathDept.getId());
+        var employee = employeeService.create(employeeAdd);
+        var employeeId = employee.getId();
+
+        var updatedName = "Ankush";
+        var employeeUpdateByName = new EmployeeUpdateReq(null, updatedName, null, null);
+
+        var updatedEmployee = employeeService.update(employeeId, employeeUpdateByName);
+
+        Optional<Employee> employeeOpt = employeeService.find(employeeId);
+
+        assertThat(employeeOpt.isPresent(), equalTo(true));
+        assertThat(employeeOpt.get().getName(), equalTo(updatedName));
+        assertThat(employeeOpt.get().getBirthday(), equalTo(updatedEmployee.getBirthday()));
+        assertThat(employeeOpt.get().getId(), equalTo(updatedEmployee.getId()));
+        assertThat(employeeOpt.get().getDepartment().getId(), equalTo(updatedEmployee.getDepartment().getId()));
 
 
+    }
 
 
 }

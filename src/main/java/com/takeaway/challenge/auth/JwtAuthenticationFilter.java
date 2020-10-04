@@ -8,6 +8,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
+// Override Spring Security UsernamePasswordAuthFilter and just let the request go to the endpoint /login declared in LoginController
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     @Override
