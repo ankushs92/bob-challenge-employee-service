@@ -44,7 +44,6 @@ public class Employee {
 
     public Employee(final EmployeeAddReq add, final Department department) {
         Assert.notNull(add, "EmployeeAddReq cannot be null");
-//        this.id = UUID.randomUUID();
         this.email = add.getEmail();
         this.name = add.getName();
         this.birthday = add.getBirthday();

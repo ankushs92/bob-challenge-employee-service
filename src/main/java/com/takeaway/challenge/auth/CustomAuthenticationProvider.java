@@ -4,7 +4,6 @@ import com.takeaway.challenge.service.AuthenticationService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +23,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(final Class<?> authentication) {
-        return false;
+        return true;
     }
 }

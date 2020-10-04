@@ -1,27 +1,35 @@
 package com.takeaway.challenge.service.impl;
 
+import com.takeaway.challenge.constants.JwtConstants;
+import com.takeaway.challenge.domain.auth.User;
 import com.takeaway.challenge.req.LoginReq;
 import com.takeaway.challenge.service.AuthenticationService;
+import com.takeaway.challenge.service.UserService;
 import com.takeaway.challenge.util.Assert;
 import com.takeaway.challenge.util.Strings;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.*;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final UserDetailsService userDetailsService;
+    private final UserService userService;
 
-    AuthenticationServiceImpl(final UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    AuthenticationServiceImpl(final UserService userService) {
+        this.userService = userService;
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken authenticate(final LoginReq loginReq) {
+    public User authenticate(final LoginReq loginReq) {
         Assert.notNull(loginReq, "loginReq cannot be null");
         var email = loginReq.getEmail();
         var password = loginReq.getPassword();
@@ -30,10 +38,39 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new BadCredentialsException("Bad credentials provided");
         }
 
-        var user = userDetailsService.loadUserByUsername(email);
-        if(user == null) {
-            throw new UsernameNotFoundException("User not found");
+        return getUser(email, password);
+    }
+
+    @Override
+    public UsernamePasswordAuthenticationToken authenticate(final String jwtToken) {
+        Assert.notEmptyString(jwtToken, "jwtToken token cannot be null or empty");
+        System.out.println(jwtToken);
+        var parsedToken = Jwts
+                .parser()
+                .setSigningKey(JwtConstants.SECRET)
+                .parseClaimsJws(jwtToken.replace("Bearer ", ""));
+
+        var username = parsedToken
+                .getBody()
+                .getSubject();
+
+        if(!Strings.hasText(username)) {
+            throw new UsernameNotFoundException("Username not found");
         }
+
+        var user = getUser(username, null);
+
+        var authorities = ((List<?>) parsedToken.getBody()
+                .get("rol")).stream()
+                .map(authority -> new SimpleGrantedAuthority((String) authority))
+                .collect(Collectors.toList());
+
+        return new UsernamePasswordAuthenticationToken(user, username, authorities);
+    }
+
+    private User getUser(final String email, final String password) {
+        var user = userService.loadUserByUsername(email)
+                              .orElseThrow(() ->new UsernameNotFoundException("User not found"));
 
         var dbPassword = user.getPassword();
         var isAccountEnabled = user.isEnabled();
@@ -42,26 +79,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var isCredentialsNonExpired = user.isCredentialsNonExpired();
         var bcryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        if(!bcryptPasswordEncoder.matches(password, dbPassword)){
-            throw new BadCredentialsException("Invalid username or password");
+        if(Objects.nonNull(password)) {
+            if(!bcryptPasswordEncoder.matches(password, dbPassword)) {
+                throw new BadCredentialsException("Invalid username or password");
+            }
         }
 
-        if(!isAccountEnabled){
+        if(!isAccountEnabled) {
             throw new DisabledException("Account has been disabled");
         }
 
-        if(!isAccountNonLocked){
+        if(!isAccountNonLocked) {
             throw new LockedException("Account has been Locked");
         }
 
-        if(!isAccountNonExpired){
+        if(!isAccountNonExpired) {
             throw new AccountExpiredException("Account has expired");
         }
 
-        if(!isCredentialsNonExpired){
+        if(!isCredentialsNonExpired) {
             throw new CredentialsExpiredException("Credentials for this account have expired");
         }
 
-        return new UsernamePasswordAuthenticationToken(user, email, user.getAuthorities());
+        return user;
     }
+
 }
