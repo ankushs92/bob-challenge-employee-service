@@ -68,9 +68,6 @@ if you pass a departmentId that does not exist in the database, an HTTP 404 with
 
 A topic called 'employee_events' is automatically created with 1 partition and 1 replication factor.
 
-# Postman
-
-
 # Other ideas
 
 We could have also modelled the 'events-service' as a Type II Dimension. This would have allowed us to track the entire history of employees in one table.
