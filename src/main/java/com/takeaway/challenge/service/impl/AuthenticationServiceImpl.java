@@ -50,70 +50,72 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UsernamePasswordAuthenticationToken authenticate(final String jwtToken) {
         Assert.notEmptyString(jwtToken, "jwtToken token cannot be null or empty");
-        try {
-            var parsedToken = Jwts
-                    .parser()
-                    .setSigningKey(JwtConstants.SECRET)
-                    .parseClaimsJws(jwtToken.replace("Bearer ", ""));
+        var parsedToken = Jwts
+                .parser()
+                .setSigningKey(JwtConstants.SECRET)
+                .parseClaimsJws(jwtToken.replace("Bearer ", ""));
 
-            var username = parsedToken
-                    .getBody()
-                    .getSubject();
+        var username = parsedToken
+                .getBody()
+                .getSubject();
 
-            if(!Strings.hasText(username)) {
-                throw new UsernameNotFoundException("Username not found");
-            }
-
-            var user = getUser(username, null);
-
-            var authorities = ((List<?>) parsedToken.getBody()
-                    .get("rol")).stream()
-                    .map(authority -> new SimpleGrantedAuthority((String) authority))
-                    .collect(Collectors.toList());
-
-            return new UsernamePasswordAuthenticationToken(user, username, authorities);
-
+        if(!Strings.hasText(username)) {
+            throw new UsernameNotFoundException("Username not found");
         }
-        catch (final Exception ex) {
-            logger.error("", ex);
-            throw new TakeawayException(TakeawayError.AUTH_01, HttpStatus.FORBIDDEN);
-        }
+
+        var user = getUser(username, null);
+
+        var authorities = ((List<?>) parsedToken.getBody()
+                .get("rol")).stream()
+                .map(authority -> new SimpleGrantedAuthority((String) authority))
+                .collect(Collectors.toList());
+
+        return new UsernamePasswordAuthenticationToken(user, username, authorities);
+
+
+
     }
 
     private User getUser(final String email, final String password) {
-        var user = userService.loadUserByUsername(email)
-                              .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        try {
+            var user = userService.loadUserByUsername(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        var dbPassword = user.getPassword();
-        var isAccountEnabled = user.isEnabled();
-        var isAccountNonLocked = user.isAccountNonLocked();
-        var isAccountNonExpired = user.isAccountNonExpired();
-        var isCredentialsNonExpired = user.isCredentialsNonExpired();
-        var bcryptPasswordEncoder = new BCryptPasswordEncoder();
+            var dbPassword = user.getPassword();
+            var isAccountEnabled = user.isEnabled();
+            var isAccountNonLocked = user.isAccountNonLocked();
+            var isAccountNonExpired = user.isAccountNonExpired();
+            var isCredentialsNonExpired = user.isCredentialsNonExpired();
+            var bcryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        if(Objects.nonNull(password)) {
-            if(!bcryptPasswordEncoder.matches(password, dbPassword)) {
-                throw new BadCredentialsException("Invalid username or password");
+            if(Objects.nonNull(password)) {
+                if(!bcryptPasswordEncoder.matches(password, dbPassword)) {
+                    throw new BadCredentialsException("Invalid username or password");
+                }
             }
-        }
 
-        if(!isAccountEnabled) {
-            throw new DisabledException("Account has been disabled");
-        }
+            if(!isAccountEnabled) {
+                throw new DisabledException("Account has been disabled");
+            }
 
-        if(!isAccountNonLocked) {
-            throw new LockedException("Account has been Locked");
-        }
+            if(!isAccountNonLocked) {
+                throw new LockedException("Account has been Locked");
+            }
 
-        if(!isAccountNonExpired) {
-            throw new AccountExpiredException("Account has expired");
-        }
+            if(!isAccountNonExpired) {
+                throw new AccountExpiredException("Account has expired");
+            }
 
-        if(!isCredentialsNonExpired) {
-            throw new CredentialsExpiredException("Credentials for this account have expired");
-        }
+            if(!isCredentialsNonExpired) {
+                throw new CredentialsExpiredException("Credentials for this account have expired");
+            }
 
-        return user;
+            return user;
+        }
+        catch (final Exception ex) {
+            logger.error("", ex);
+            throw new TakeawayException(TakeawayError.AUTH_01, HttpStatus.FORBIDDEN, ex);
+        }
     }
 
 }

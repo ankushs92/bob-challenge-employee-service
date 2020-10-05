@@ -17,14 +17,14 @@ public class TakeawayException extends RuntimeException {
 
 
     public TakeawayException(final TakeawayError errorCode, final HttpStatus status) {
-        this(errorCode, null, status);
+        this(errorCode, status, null);
     }
 
 
     public TakeawayException(
             final TakeawayError errorCode,
-            final Exception ex,
-            final HttpStatus status
+            final HttpStatus status,
+            final Exception ex
     )
     {
         super(errorCode.getDesc());

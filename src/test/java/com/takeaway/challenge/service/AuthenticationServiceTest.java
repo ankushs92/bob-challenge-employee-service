@@ -3,6 +3,7 @@ package com.takeaway.challenge.service;
 import com.takeaway.challenge.ChallengeApplicationTests;
 import com.takeaway.challenge.domain.auth.Role;
 import com.takeaway.challenge.domain.auth.User;
+import com.takeaway.challenge.exception.TakeawayException;
 import com.takeaway.challenge.repository.UserRepository;
 import com.takeaway.challenge.req.LoginReq;
 import com.takeaway.challenge.util.JwtUtil;
@@ -53,7 +54,7 @@ public class AuthenticationServiceTest extends ChallengeApplicationTests {
         var pass = "root";
         var loginReq = new LoginReq(email, pass);
 
-        assertThrows(UsernameNotFoundException.class, () -> authenticationService.authenticate(loginReq));
+        assertThrows(TakeawayException.class, () -> authenticationService.authenticate(loginReq));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class AuthenticationServiceTest extends ChallengeApplicationTests {
         var pass = "Something else";
         var loginReq = new LoginReq(email, pass);
 
-        assertThrows(BadCredentialsException.class, () -> authenticationService.authenticate(loginReq));
+        assertThrows(TakeawayException.class, () -> authenticationService.authenticate(loginReq));
     }
 
     @Test
@@ -93,7 +94,7 @@ public class AuthenticationServiceTest extends ChallengeApplicationTests {
         user.setEnabled(false);
         userRepository.save(user);
 
-        assertThrows(DisabledException.class, () -> authenticationService.authenticate(jwt));
+        assertThrows(TakeawayException.class, () -> authenticationService.authenticate(jwt));
     }
 
 

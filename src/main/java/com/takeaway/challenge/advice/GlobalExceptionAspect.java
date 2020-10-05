@@ -23,7 +23,7 @@ public class GlobalExceptionAspect {
     )
     {
         logger.error("", ex);
-        var errorCode = "";
+        var errorCode = ex.getMessage();
         var message = "Internal Server error";
         var status = HttpStatus.INTERNAL_SERVER_ERROR;
         if(ex instanceof TakeawayException) {

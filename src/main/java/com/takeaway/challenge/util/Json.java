@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.takeaway.challenge.jackson.LocalDateDeserializer;
 import com.takeaway.challenge.jackson.LocalDateSerializer;
 import com.takeaway.challenge.jackson.ZonedDateTimeSerializer;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 
 public class Json {
@@ -22,6 +24,7 @@ public class Json {
     static {
         var simpleModule = new SimpleModule();
         simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer());
+        simpleModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
         simpleModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
 
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)

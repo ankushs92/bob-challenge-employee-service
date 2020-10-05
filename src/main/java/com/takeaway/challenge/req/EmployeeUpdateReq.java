@@ -17,10 +17,9 @@ public class EmployeeUpdateReq {
             @JsonProperty("name") final String name,
 
             @JsonProperty("birthday")
-//            @JsonDeserialize(using = LocalDateDeserializer.class)
             final LocalDate birthday,
-            @JsonProperty("departmentId")
-            final Integer departmentId
+
+            @JsonProperty("departmentId") final Integer departmentId
     )
     {
         this.email = email;
