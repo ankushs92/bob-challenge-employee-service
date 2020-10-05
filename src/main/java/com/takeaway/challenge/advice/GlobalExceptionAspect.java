@@ -3,10 +3,8 @@ package com.takeaway.challenge.advice;
 import com.takeaway.challenge.exception.TakeawayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,17 +24,13 @@ public class GlobalExceptionAspect {
     {
         logger.error("", ex);
         var errorCode = "";
-        var message = "";
-        HttpStatus status;
+        var message = "Internal Server error";
+        var status = HttpStatus.INTERNAL_SERVER_ERROR;
         if(ex instanceof TakeawayException) {
             var takeawayEx = (TakeawayException) ex;
             errorCode = takeawayEx.getErrorCode().name();
             message = takeawayEx.getMessage();
             status = takeawayEx.getStatus();
-        }
-        else {
-            message = "Internal Server error";
-            status = HttpStatus.INTERNAL_SERVER_ERROR;;
         }
 
         var errorMsg = new ErrorMessage(

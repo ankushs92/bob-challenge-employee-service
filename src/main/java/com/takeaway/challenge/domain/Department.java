@@ -16,10 +16,10 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "created_on")
+    @Column(name = "created_on", nullable = false)
     private ZonedDateTime created;
 
     @OneToMany(mappedBy = "department")

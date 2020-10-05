@@ -82,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private User getUser(final String email, final String password) {
         var user = userService.loadUserByUsername(email)
-                              .orElseThrow(() ->new UsernameNotFoundException("User not found"));
+                              .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         var dbPassword = user.getPassword();
         var isAccountEnabled = user.isEnabled();

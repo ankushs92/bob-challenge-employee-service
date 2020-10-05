@@ -21,23 +21,23 @@ public class Employee {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "full_name")
+    @Column(name = "full_name", nullable = false)
     private String name;
 
-    @Column(name = "birthday")
+    @Column(name = "birthday", nullable = false)
     private LocalDate birthday;
 
     @ManyToOne
     @JoinColumn(name = "dept_id")
     private Department department;
 
-    @Column(name = "created_on")
+    @Column(name = "created_on", nullable = false)
     private ZonedDateTime created;
 
-    @Column(name = "updated")
+    @Column(name = "updated", nullable = false)
     private ZonedDateTime updated;
 
     public Employee() {}

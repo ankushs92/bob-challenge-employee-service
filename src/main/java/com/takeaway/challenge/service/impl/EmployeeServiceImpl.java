@@ -46,7 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //The department needs to exist in the database for an employee to be added to it
         var department = departmentService.find(add.getDepartmentId())
-                                          .orElseThrow(() ->new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND));
+                                          .orElseThrow(() -> new TakeawayException(TakeawayError.GEN_01, HttpStatus.NOT_FOUND));
 
         var employee = repository.findOneByEmail(add.getEmail());
         if(employee.isPresent()) {

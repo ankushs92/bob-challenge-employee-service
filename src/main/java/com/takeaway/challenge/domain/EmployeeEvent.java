@@ -2,6 +2,7 @@ package com.takeaway.challenge.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.takeaway.challenge.domain.enums.CrudOp;
+import com.takeaway.challenge.jackson.LocalDateSerializer;
 import com.takeaway.challenge.jackson.ZonedDateTimeSerializer;
 import com.takeaway.challenge.util.Assert;
 
@@ -14,7 +15,10 @@ public class EmployeeEvent {
     private final UUID id;
     private final String email;
     private final String name;
+
+    @JsonSerialize(using = LocalDateSerializer.class)
     private final LocalDate birthday;
+
     private final DepartmentEvent department;
 
     @JsonSerialize(using = ZonedDateTimeSerializer.class)
@@ -22,6 +26,7 @@ public class EmployeeEvent {
 
     @JsonSerialize(using = ZonedDateTimeSerializer.class)
     private final ZonedDateTime updated;
+
     private final CrudOp crudOp;
 
     public EmployeeEvent(final Employee employee, final CrudOp crudOp) {

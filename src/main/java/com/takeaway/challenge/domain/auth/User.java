@@ -14,28 +14,28 @@ import java.util.Collection;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "created")
+    @Column(name = "created", nullable = false)
     private ZonedDateTime created;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Type(type = "yes_no")
-    @Column(name = "is_enabled")
+    @Column(name = "is_enabled", nullable = false)
     private Boolean isEnabled;
 
     @Type(type="yes_no")
-    @Column(name = "credentials_non_expired")
+    @Column(name = "credentials_non_expired", nullable = false)
     private Boolean isCredentialsNonExpired;
 
     @Type(type="yes_no")
-    @Column(name = "account_non_expired")
+    @Column(name = "account_non_expired", nullable = false)
     private Boolean isAccountNonExpired;
 
     @Type(type="yes_no")
@@ -80,7 +80,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return isEnabled;
     }
-
 
     public Integer getId() {
         return id;

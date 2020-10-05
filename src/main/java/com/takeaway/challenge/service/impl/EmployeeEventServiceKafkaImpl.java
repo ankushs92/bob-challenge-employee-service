@@ -1,5 +1,6 @@
 package com.takeaway.challenge.service.impl;
 
+import com.google.common.collect.ImmutableMap;
 import com.takeaway.challenge.constants.KafkaTopic;
 import com.takeaway.challenge.domain.EmployeeEvent;
 import com.takeaway.challenge.service.EmployeeEventService;
@@ -42,7 +43,6 @@ public class EmployeeEventServiceKafkaImpl implements EmployeeEventService {
                      },
                      (failure) -> logger.error("Could not push message to Kafka :", failure)
              );
-
-        return new AsyncResult<>(metaData);
+        return new AsyncResult<>(ImmutableMap.copyOf(metaData));
     }
 }

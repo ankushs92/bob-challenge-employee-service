@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationService authenticationService;
@@ -43,10 +42,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(final WebSecurity web) throws Exception {
         web
                 .ignoring()
+                .antMatchers(HttpMethod.POST, "/department/")
+                .antMatchers(HttpMethod.GET, "/configuration/ui")
                 .antMatchers(HttpMethod.GET, "/swagger-resources/**")
-                .antMatchers(HttpMethod.GET, "/webjars/**")
+                .antMatchers(HttpMethod.GET, "/configuration/security")
+                .antMatchers(HttpMethod.GET, "/swagger-ui.html")
+                .antMatchers(HttpMethod.GET, "/swagger-ui/**")
                 .antMatchers(HttpMethod.GET, "/v2/api-docs")
-                .antMatchers(HttpMethod.GET, "/swagger**");
+                .antMatchers(HttpMethod.GET, "/v3/api-docs");
+
     }
 
 
