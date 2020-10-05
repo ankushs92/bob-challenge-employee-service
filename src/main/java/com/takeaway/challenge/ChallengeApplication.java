@@ -17,8 +17,11 @@ import java.time.ZonedDateTime;
 @EnableAsync
 public class ChallengeApplication implements CommandLineRunner {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public ChallengeApplication(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(ChallengeApplication.class, args);

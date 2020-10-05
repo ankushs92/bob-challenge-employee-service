@@ -1,0 +1,140 @@
+{
+	"variables": [],
+	"info": {
+		"name": "takeaway",
+		"_postman_id": "9f075698-e212-5388-aed8-7783ea8a7123",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"url": "localhost:8080/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\" : \"root\",\n\t\"password\" : \"root\"\n}"
+				},
+				"description": "Login with 'root' as email and pass"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Department",
+			"request": {
+				"url": "localhost:8080/department/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "content-type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "",
+						"value": "",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\" : \"English\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add Employee",
+			"request": {
+				"url": "localhost:8080/employee/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb290Iiwicm9sIjpbIlVTRVIiXX0._vzTqKgeE-dNUP5nEY18dntoqI2BdrX4iEMP9ziMX-xFkyrDxJWcrFWzy1X-17D5NojK9OD_eqhw2sZLikUuTg",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\" : \"Ankush\",\n\t\"email\" : \"ankkush2al0058@gmail.com\",\n\t\"birthday\" : \"1992-10-05\",\n\t\"departmentId\" : 85\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Employee by Uuid",
+			"request": {
+				"url": "localhost:8080/employee/48cf0740-1d14-4b5d-b056-7e4a3e1e5a96",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb290Iiwicm9sIjpbIlVTRVIiXX0._vzTqKgeE-dNUP5nEY18dntoqI2BdrX4iEMP9ziMX-xFkyrDxJWcrFWzy1X-17D5NojK9OD_eqhw2sZLikUuTg",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update Employee by Uuid",
+			"request": {
+				"url": "localhost:8080/employee/48cf0740-1d14-4b5d-b056-7e4a3e1e5a96",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb290Iiwicm9sIjpbIlVTRVIiXX0._vzTqKgeE-dNUP5nEY18dntoqI2BdrX4iEMP9ziMX-xFkyrDxJWcrFWzy1X-17D5NojK9OD_eqhw2sZLikUuTg",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Johny\",\n\t\"email\" : \"ankush200@gmail.com\",\n\t\"departmentId\": 86\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Employee by Uuid",
+			"request": {
+				"url": "localhost:8080/employee/48cf0740-1d14-4b5d-b056-7e4a3e1e5a96",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb290Iiwicm9sIjpbIlVTRVIiXX0._vzTqKgeE-dNUP5nEY18dntoqI2BdrX4iEMP9ziMX-xFkyrDxJWcrFWzy1X-17D5NojK9OD_eqhw2sZLikUuTg",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
