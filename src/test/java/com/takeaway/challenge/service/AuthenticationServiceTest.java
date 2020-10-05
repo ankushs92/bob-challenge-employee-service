@@ -1,25 +1,18 @@
 package com.takeaway.challenge.service;
 
 import com.takeaway.challenge.ChallengeApplicationTests;
-import com.takeaway.challenge.domain.auth.Role;
 import com.takeaway.challenge.domain.auth.User;
 import com.takeaway.challenge.exception.TakeawayException;
 import com.takeaway.challenge.repository.UserRepository;
 import com.takeaway.challenge.req.LoginReq;
 import com.takeaway.challenge.util.JwtUtil;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AuthenticationServiceTest extends ChallengeApplicationTests {

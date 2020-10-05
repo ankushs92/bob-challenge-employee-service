@@ -6,13 +6,12 @@ import com.takeaway.challenge.exception.TakeawayException;
 import com.takeaway.challenge.repository.DepartmentRepository;
 import com.takeaway.challenge.req.DepartmentAddReq;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DepartmentServiceTest extends ChallengeApplicationTests {

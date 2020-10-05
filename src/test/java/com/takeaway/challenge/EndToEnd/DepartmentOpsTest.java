@@ -2,7 +2,6 @@ package com.takeaway.challenge.EndToEnd;
 
 import com.takeaway.challenge.ChallengeApplicationTests;
 import com.takeaway.challenge.req.DepartmentAddReq;
-import com.takeaway.challenge.req.EmployeeAddReq;
 import com.takeaway.challenge.util.Json;
 import com.takeaway.challenge.util.JwtUtil;
 import org.junit.jupiter.api.Test;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.time.LocalDate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
